@@ -1,0 +1,54 @@
+# -------------------
+# Logs and debug info
+# -------------------
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+# -------------------
+# Node.js dependencies and builds
+# -------------------
+node_modules/
+dist/
+dist-ssr/
+*.local
+
+# -------------------
+# Editor and OS files
+# -------------------
+.vscode/*
+!.vscode/extensions.json
+.idea/
+.DS_Store
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# -------------------
+# Python ignores
+# -------------------
+flask-api/venv/
+__pycache__/
+*.pyc
+.env
+*.env
+instance/  # Optional if using Flask instance folder
+
+# -------------------
+# Client-specific (Vite/React)
+# -------------------
+client/node_modules/
+client/dist/
+client/.env
+
+# -------------------
+# Server-specific (Node.js/Express)
+# -------------------
+server/node_modules/
+server/.env

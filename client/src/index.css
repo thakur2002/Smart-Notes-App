@@ -1,0 +1,48 @@
+@import "tailwindcss";
+
+
+body {
+  @apply bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-gray-100 transition-colors duration-200;
+}
+/* Cursor styling */
+.ProseMirror-focused {
+    caret-color: #3b82f6;
+  }
+  
+  /* Paragraph spacing */
+  .ProseMirror p {
+    margin-top: 0.5rem;
+    margin-bottom: 0.5rem;
+  }
+  
+  /* List styling */
+  .ProseMirror ul {
+    list-style-type: disc;
+    padding-left: 1.5rem;
+  }
+  
+  .ProseMirror ol {
+    list-style-type: decimal;
+    padding-left: 1.5rem;
+  }
+
+  /* Remove outlines and fix cursor */
+.ProseMirror {
+    border: none !important;
+    outline: none !important;
+    padding: 8px !important;
+    min-height: 300px;
+  }
+  
+  .ProseMirror:focus {
+    box-shadow: none !important;
+  }
+  
+  /* Empty state placeholder */
+  .ProseMirror p[data-placeholder]::before {
+    content: attr(data-placeholder);
+    color: #999;
+    float: left;
+    height: 0;
+    pointer-events: none;
+  }

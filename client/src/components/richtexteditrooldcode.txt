@@ -1,0 +1,119 @@
+import React from 'react';
+import { useEditor, EditorContent } from '@tiptap/react';
+import StarterKit from '@tiptap/starter-kit';
+import Underline from '@tiptap/extension-underline';
+import Link from '@tiptap/extension-link';
+import Image from '@tiptap/extension-image';
+import ListItem from '@tiptap/extension-list-item';
+import OrderedList from '@tiptap/extension-ordered-list';
+import BulletList from '@tiptap/extension-bullet-list';
+import Heading from '@tiptap/extension-heading';
+//import { ReactComponent as BoldIcon } from './assets/bold.svg';
+//import { ReactComponent as ItalicIcon } from './assets/italic.svg';
+import { BoldIcon, ItalicIcon } from '@heroicons/react/24/outline';
+// Import other icons as needed
+
+const RichTextEditor = ({ content, onChange }) => {
+  const editor = useEditor({
+    extensions: [
+      StarterKit.configure({
+        heading: false,
+      }),
+      Underline,
+      Link.configure({
+        openOnClick: false,
+      }),
+      Image,
+      Heading.configure({
+        levels: [1, 2, 3],
+      }),
+      BulletList,
+      OrderedList,
+      ListItem,
+    ],
+    content: content,
+    onUpdate: ({ editor }) => {
+      onChange(editor.getHTML());
+    },
+  });
+
+  if (!editor) return null;
+
+  return (
+    <div className="border rounded-lg p-4 bg-white shadow-sm">
+      {/* Formatting Toolbar */}
+      <div className="flex flex-wrap gap-2 mb-4 border-b pb-2">
+        {/* Headings */}
+        <select
+          onChange={(e) => editor.chain().focus().toggleHeading({ level: parseInt(e.target.value) }).run()}
+          className="px-2 py-1 border rounded"
+        >
+          <option value="">Normal</option>
+          <option value="1">Heading 1</option>
+          <option value="2">Heading 2</option>
+          <option value="3">Heading 3</option>
+        </select>
+
+        {/* Basic Formatting */}
+        <button
+          onClick={() => editor.chain().focus().toggleBold().run()}
+          className={`px-2 py-1 rounded ${editor.isActive('bold') ? 'bg-blue-100' : ''}`}
+        >
+          <BoldIcon className="w-5 h-5" />
+        </button>
+
+        <button
+          onClick={() => editor.chain().focus().toggleItalic().run()}
+          className={`px-2 py-1 rounded ${editor.isActive('italic') ? 'bg-blue-100' : ''}`}
+        >
+          <ItalicIcon className="w-5 h-5" />
+        </button>
+
+        {/* Lists */}
+        <button
+          onClick={() => editor.chain().focus().toggleBulletList().run()}
+          className={`px-2 py-1 rounded ${editor.isActive('bulletList') ? 'bg-blue-100' : ''}`}
+        >
+          • List
+        </button>
+
+        <button
+          onClick={() => editor.chain().focus().toggleOrderedList().run()}
+          className={`px-2 py-1 rounded ${editor.isActive('orderedList') ? 'bg-blue-100' : ''}`}
+        >
+          1. List
+        </button>
+
+        {/* Link */}
+        <button
+          onClick={() => {
+            const url = prompt('Enter URL');
+            if (url) editor.chain().focus().setLink({ href: url }).run();
+          }}
+          className="px-2 py-1 rounded"
+        >
+          🔗
+        </button>
+
+        {/* Image */}
+        <button
+          onClick={() => {
+            const url = prompt('Enter Image URL');
+            if (url) editor.chain().focus().setImage({ src: url }).run();
+          }}
+          className="px-2 py-1 rounded"
+        >
+          🖼️
+        </button>
+      </div>
+
+      {/* Editor Content */}
+      <EditorContent
+        editor={editor}
+        className="prose max-w-none min-h-[300px] p-2 focus:outline-none"
+      />
+    </div>
+  );
+};
+
+export default RichTextEditor;
