@@ -5,12 +5,12 @@ const mongoose = require('mongoose');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const axios = require('axios');
-
+require('dotenv').config();
 const app = express();
 app.use(cors());
 app.use(bodyParser.json());
-
-mongoose.connect('mongodb://localhost:27017/ai-notes')
+const mongouri=process.env.MONGO_URI;
+mongoose.connect(mongouri)
 .then(() => console.log('Connected to MongoDB'))
 .catch((err) => console.error('MongoDB connection error:', err));
 
@@ -30,7 +30,7 @@ const noteSchema = new mongoose.Schema({
   createdAt: { type: Date, default: Date.now },
 });
 
-const User = mongoose.model('User', userSchema);
+const User = mongoose.model('noteUser', userSchema);
 const Note = mongoose.model('Note', noteSchema);
 
 
