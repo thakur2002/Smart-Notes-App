@@ -10,6 +10,8 @@ from bs4 import BeautifulSoup
 app = Flask(__name__)
 CORS(app)
 
+
+
 # ===== HTML Sanitization =====
 def sanitize_text(raw_text):
     soup = BeautifulSoup(raw_text, "html.parser")
@@ -114,7 +116,6 @@ def summarize():
     except Exception as e:
         print("Summarization Error:", str(e))
         return jsonify({'error': str(e)}), 500
-
 # ===== Main =====
 if __name__ == '__main__':
     app.run(port=5001, debug=True)

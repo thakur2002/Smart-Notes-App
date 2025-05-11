@@ -44,7 +44,9 @@ const RichTextEditor = ({ initialContent, onChange, readOnly }) => {
     content: initialContent,
     editable: !readOnly,
     onUpdate: ({ editor }) => {
-      onChange(editor.getHTML());
+     const html = editor.getHTML();
+     const text = editor.getText();
+     onChange(html, text); // Send both HTML and plain text
     },
     editorProps: {
       attributes: {

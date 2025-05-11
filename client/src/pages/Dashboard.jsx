@@ -3,8 +3,7 @@ import { useAuth } from '../context/AuthContext';
 import axios from 'axios';
 import Sidebar from '../components/Sidebar';
 import NoteEditor from '../components/NoteEditor';
-import { ArrowPathIcon, UserCircleIcon, ChevronDownIcon, SunIcon,
-  MoonIcon  } from '@heroicons/react/24/outline';
+import { ArrowPathIcon, UserCircleIcon, ChevronDownIcon} from '@heroicons/react/24/outline';
 
 const ProfileDropdown = ({ user, logout }) => {
   const [isOpen, setIsOpen] = useState(false);
@@ -48,12 +47,11 @@ const Dashboard = () => {
     setError(null);
     try {
       const res = await axios.get('http://localhost:5000/notes', {
-        params: { search: searchTerm, tag: selectedTag },
-        headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
-      });
+        params: { search: searchTerm, tag: selectedTag} ,
+      withCredentials:true});
       setNotes(res.data);
     } catch (error) {
-      setError('Failed to fetch notes. Please try again.');
+      setError(error.response?.data?.error||"Request failed");
     } finally {
       setIsLoading(false);
     }
@@ -87,9 +85,6 @@ const Dashboard = () => {
       />
 
       <div className="flex-1 flex flex-col">
-        {/* <header className="bg-white shadow-sm py-4 px-6 flex justify-end">
-          <ProfileDropdown user={user} logout={logout} />
-        </header> */}
         <header className="bg-[#8f9ed8] shadow-sm py-4 px-6 flex items-center relative">
           <h1 className="text-xl font-bold text-gray-800 absolute left-1/2 transform -translate-x-1/2">
             AI Powered Notes Application

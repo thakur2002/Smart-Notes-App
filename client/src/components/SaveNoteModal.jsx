@@ -18,8 +18,8 @@ const SaveNoteModal = ({ onClose, onSave, initialTitle, isLoading }) => {
     try {
       await onSave({title, tag });
       onClose();
-    } catch (err) {
-      setError(err.response?.data?.error || 'Error saving note');
+    } catch (error) {
+      setError(error.response?.data?.error || 'Error saving note');
     }
   };
 

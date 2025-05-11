@@ -46,7 +46,8 @@ instance/  # Optional if using Flask instance folder
 client/node_modules/
 client/dist/
 client/.env
-
+client/src/pages/tempauthpage.jsx
+client/src/pages/tempdashboard.jsx
 # -------------------
 # Server-specific (Node.js/Express)
 # -------------------

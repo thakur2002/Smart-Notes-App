@@ -6,6 +6,7 @@ import jsPDF from 'jspdf';
 
 const NoteEditor = ({ selectedNote, setSelectedNote, fetchNotes }) => {
   const [content, setContent] = useState('');
+  const [textContent, setTextContent] = useState('');
   const [originalContent, setOriginalContent] = useState('');
   const [isEditing, setIsEditing] = useState(true);
   const [showSaveModal, setShowSaveModal] = useState(false);
@@ -16,15 +17,19 @@ const NoteEditor = ({ selectedNote, setSelectedNote, fetchNotes }) => {
   const [keywords, setKeywords] = useState([]);
   const [isSummarizing, setIsSummarizing] = useState(false);
   const [isExtractingKeywords, setIsExtractingKeywords] = useState(false);
+  const [showCopyPopup, setShowCopyPopup] = useState(false);
+  const getTextFromHTML = (html) => {
+  const tempDiv = document.createElement('div');
+  tempDiv.innerHTML = html;
+  return tempDiv.textContent || '';
+};
 
-  useEffect(() => {
-    if (selectedNote) {
-      const initialContent = selectedNote.content || '';
-      setHasChanges(content !== initialContent);
-    } else {
-      setHasChanges(content.trim().length > 0);
-    }
-  }, [content, selectedNote]);
+  useEffect(() => { 
+   const trimmedText = textContent.trim();
+  const initialText = (selectedNote?.content && getTextFromHTML(selectedNote.content))?.trim() || '';
+
+  setHasChanges(trimmedText !== initialText && trimmedText.length > 0);
+  }, [textContent, selectedNote]);
 
   // useEffect(() => {
   //   return () => {
@@ -51,6 +56,11 @@ const NoteEditor = ({ selectedNote, setSelectedNote, fetchNotes }) => {
     }
   }, [selectedNote]);
 
+  
+  const handleEditorChange = (newHTML, plainText) => {
+  setContent(newHTML);
+  setTextContent(plainText);
+};
   const handleSave = async (noteData) => {
     if (content.trim() === '') {
       setError('Note content cannot be empty');
@@ -64,7 +74,7 @@ const NoteEditor = ({ selectedNote, setSelectedNote, fetchNotes }) => {
         await axios.put(
           `http://localhost:5000/notes/${selectedNote._id}`,
           { ...noteData, content },
-          { headers: { Authorization: `Bearer ${localStorage.getItem('token')}` } }
+          { withCredentials:true }
         );
           // Update the selected note manually
   setSelectedNote((prev) => ({
@@ -75,7 +85,7 @@ const NoteEditor = ({ selectedNote, setSelectedNote, fetchNotes }) => {
         const response = await axios.post(
           'http://localhost:5000/notes',
           { ...noteData, content },
-          { headers: { Authorization: `Bearer ${localStorage.getItem('token')}` } }
+          { withCredentials:true }
         );
         setSelectedNote(response.data);
       }
@@ -83,8 +93,7 @@ const NoteEditor = ({ selectedNote, setSelectedNote, fetchNotes }) => {
       setShowSaveModal(false);
       setIsEditing(false);
     } catch (error) {
-      const errorMessage = error.response?.data?.error || 'Failed to save note. Please try again.';
-      throw new Error(errorMessage); // Pass the error to SaveNoteModal
+      throw error // Pass the error to SaveNoteModal
     } finally {
       setIsLoading(false);
     }
@@ -94,14 +103,14 @@ const NoteEditor = ({ selectedNote, setSelectedNote, fetchNotes }) => {
     setIsSummarizing(true);
     try {
       const response = await axios.post(
-        `http://localhost:5000/notes/${selectedNote._id}/summarize`,
-        {},
-        { headers: { Authorization: `Bearer ${localStorage.getItem('token')}` } }
+        `http://localhost:5000/notes/${selectedNote._id}/summarize`,{},
+        {withCredentials:true }
       );
       setSummary(response.data.summary);
       fetchNotes();
     } catch (error) {
-      console.error('Summarization error:', error);
+      console.error('Summarization error:', error); 
+      
     } finally {
       setIsSummarizing(false);
     }
@@ -111,9 +120,8 @@ const NoteEditor = ({ selectedNote, setSelectedNote, fetchNotes }) => {
     setIsExtractingKeywords(true);
     try {
       const response = await axios.post(
-        `http://localhost:5000/notes/${selectedNote._id}/keywords`,
-        {},
-        { headers: { Authorization: `Bearer ${localStorage.getItem('token')}` } }
+        `http://localhost:5000/notes/${selectedNote._id}/keywords`,{},
+        { withCredentials:true }
       );
       setKeywords(response.data.keywords);
       fetchNotes();
@@ -241,7 +249,7 @@ const NoteEditor = ({ selectedNote, setSelectedNote, fetchNotes }) => {
          onClick={() =>
            handleSave({ title: selectedNote.title, tag: selectedNote.tag })
          }
-         disabled={!hasChanges}
+        disabled={!hasChanges || textContent.trim().length === 0}
          className="p-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50"
        >
          Save Changes
@@ -257,14 +265,35 @@ const NoteEditor = ({ selectedNote, setSelectedNote, fetchNotes }) => {
       <RichTextEditor
      key={selectedNote?._id || 'new-note'}
      initialContent={selectedNote?.content || ''}
-     onChange={setContent}
+     onChange={handleEditorChange}
      readOnly={!isEditing}
       />
+ 
+ {showCopyPopup && (
+  <div className="fixed top-4 left-1/2 transform -translate-x-1/2 z-50 bg-green-100 text-green-700 px-4 py-2 rounded shadow-md transition-opacity duration-500">
+    Copied to clipboard!
+  </div>
+)}
+
+<div className="mt-4">
+  <button
+    onClick={() => {
+      navigator.clipboard.writeText(textContent);
+      setShowCopyPopup(true);
+      setTimeout(() => setShowCopyPopup(false), 2000);
+    }}
+    disabled={textContent.trim().length === 0}
+    className="bg-gray-200 text-gray-700 px-4 py-2 rounded hover:bg-gray-300 text-sm disabled:opacity-50"
+  >
+    📋 Copy Note
+  </button>
+</div>
+
 
       {!selectedNote && (
         <button
           onClick={() => setShowSaveModal(true)}
-          disabled={!hasChanges}
+           disabled={!hasChanges || textContent.trim().length === 0}
           className="mt-4 bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 disabled:opacity-50"
         >
           Save New Note

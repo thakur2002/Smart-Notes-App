@@ -11,21 +11,31 @@ const AuthPage = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
   const [successMessage, setSuccessMessage] = useState('');
+  const [usernameValid, setUsernameValid] = useState(true);
+  const [passwordValid, setPasswordValid] = useState(true);
 
+  const validateUsername = (name) => {
+  const usernameRegex = /^[a-z0-9_]{4,20}$/;
+  return usernameRegex.test(name);
+  };
+const validatePassword = (pwd) => {
+  const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+  return passwordRegex.test(pwd);
+};
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsLoading(true);
     setError('');
     setSuccessMessage('');
 
-    const formattedusername = username
-    .trim()
-    .replace(/\s+/g, ' ')
-    .split(' ')
-    .map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
-    .join(' ');
-    //if (!formattedusername) return setError('username is required');
-    setUsername(formattedusername);
+    // const formattedusername = username
+    // .trim()
+    // .replace(/\s+/g, ' ')
+    // .split(' ')
+    // .map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
+    // .join(' ');
+    // //if (!formattedusername) return setError('username is required');
+    // setUsername(formattedusername);
 
     try {
       if (isLogin) {
@@ -34,7 +44,7 @@ const AuthPage = () => {
         // console.log('Sending registration request to:', 'http://localhost:5000/register');
         // console.log('Request payload:', { username, password });
 
-        const response = await axios.post('http://localhost:5000/register', { username, password });
+        const response = await axios.post('http://localhost:5000/auth/register', { username, password });
         console.log('Registration response:', response.data);
 
         setSuccessMessage('Registration successful! Logging you in...');
@@ -44,9 +54,7 @@ const AuthPage = () => {
       }
     } catch (error) {
       setError(
-        isLogin
-          ? 'Invalid username or password. Please try again.'
-          : error.response?.data?.error || 'Registration failed. Username may already be taken.'
+        error.response?.data?.error || 'Request Failed'
       );
       console.error('Authentication error:', error.response?.data || error.message);
     } finally {
@@ -95,17 +103,9 @@ const AuthPage = () => {
                 name="username"
                 type="text"
                 value={username}
-                onChange={(e) =>{
-                  const input = e.target.value;
-
-                const capitalized = input
-                  .split(' ')
-                  .map(word =>
-                    word ? word.charAt(0).toUpperCase() + word.slice(1).toLowerCase() : ''
-                  )
-                  .join(' ');
-              
-                setUsername(capitalized);
+                onChange={(e) =>{const input = e.target.value.toLowerCase().replace(/\s/g, '');
+                 setUsername(input);  
+                 setUsernameValid(validateUsername(input)); 
                 }}
                 required
                 className="w-full pl-10 pr-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
@@ -113,8 +113,13 @@ const AuthPage = () => {
               />
               <UserIcon className="w-5 h-5 absolute left-3 top-2.5 text-gray-400" />
             </div>
+            {!usernameValid && (
+  <p className="text-sm text-red-500 mt-1">
+    Username must be 4-20 characters, lowercase letters, numbers, or underscores only.
+  </p>
+)}
           </div>
-
+          
           <div>
             <label htmlFor="password" className="block text-sm font-medium text-gray-700">
               Password
@@ -125,19 +130,28 @@ const AuthPage = () => {
                 name="password"
                 type="password"
                 value={password}
-                onChange={(e) => setPassword(e.target.value)}
+                onChange={(e) =>{  
+                  const pwd = e.target.value;
+                  setPassword(pwd);
+                  setPasswordValid(validatePassword(pwd));
+                }}
                 required
                 className="w-full pl-10 pr-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                 placeholder="Enter your password"
               />
               <LockClosedIcon className="w-5 h-5 absolute left-3 top-2.5 text-gray-400" />
             </div>
+            {!passwordValid && (
+  <p className="text-sm text-red-500 mt-1">
+    Password must be at least 8 characters with 1 uppercase, 1 lowercase, 1 number, and 1 special character.
+  </p>
+)}
           </div>
 
           <div>
             <button
               type="submit"
-              disabled={isLoading}
+            disabled={isLoading || !usernameValid || !passwordValid}
               className="w-full bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 disabled:opacity-50"
             >
               {isLoading ? (

@@ -44,7 +44,7 @@ const Sidebar = ({
       await axios.put(
         `http://localhost:5000/notes/${noteId}`,
         { title: formattedTitle },
-        { headers: { Authorization: `Bearer ${localStorage.getItem('token')}` } }
+        { withCredentials:true }
       );
       setRenamingNoteId(null);
       fetchNotes();
@@ -74,7 +74,7 @@ const Sidebar = ({
     try {
       await axios.delete(
         `http://localhost:5000/notes/${noteId}`,
-        { headers: { Authorization: `Bearer ${localStorage.getItem('token')}` } }
+        {withCredentials:true}
       );
       fetchNotes();
       if (selectedNote?._id === noteId) onSelectNote(null);
