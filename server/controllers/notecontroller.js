@@ -82,7 +82,7 @@ exports.summarizeNote=async (req, res) => {
     }
 
     // Call Flask API for summarization
-    const response = await axios.post('http://localhost:5001/summarize', {
+    const response = await axios.post('https://smart-notes-app-aazj.onrender.com/summarize', {
       text: note.content,
     });
 
@@ -114,7 +114,7 @@ exports.extractKeywords=async (req, res) => {
     }
       console.log("keyword request recieved");
     // Call Flask API for keyword extraction
-    const response = await axios.post('http://localhost:5001/extract-keywords', {
+    const response = await axios.post('https://smart-notes-app-aazj.onrender.com/extract-keywords', {
       text: note.content,
     });
 
