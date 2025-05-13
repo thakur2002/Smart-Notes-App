@@ -8,7 +8,7 @@ const noteRoutes = require('./routes/noteroutes');
 const cookieParser = require('cookie-parser');
 const app = express();
 app.use(cors({
-  origin: 'https://notegenius-beta.vercel.app/', //frontend origin
+  origin: ['https://notegenius-beta.vercel.app', 'http://localhost:5173'],//frontend origin
   credentials: true
 }));
 app.use(bodyParser.json());
