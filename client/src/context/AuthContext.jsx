@@ -9,7 +9,7 @@ export const AuthProvider = ({ children }) => {
 
   const login = async (credentials) => {
     try {
-      const res = await axios.post('https://notesappserver-u4v5.onrender.com/auth/login', credentials,{withCredentials: true});
+      const res = await axios.post('https://smartnotesappserver.onrender.com/auth/login', credentials,{withCredentials: true});
       setUser(res.data.user); // Now contains user data from server
     } catch (error) {
      // console.error('Login failed:', error.response?.data || error.message);
@@ -18,7 +18,7 @@ export const AuthProvider = ({ children }) => {
   };
 const logout = useCallback(async () => {
   try {
-    await axios.post('https://notesappserver-u4v5.onrender.com/auth/logout', {}, {
+    await axios.post('https://smartnotesappserver.onrender.com/auth/logout', {}, {
       withCredentials: true
     });
   } catch (e) {
@@ -30,7 +30,7 @@ const logout = useCallback(async () => {
   useEffect(() => {  
       const checkAuth = async () => {
     try {
-      const res = await axios.get('https://notesappserver-u4v5.onrender.com/auth/me', {
+      const res = await axios.get('https://smartnotesappserver.onrender.com/auth/me', {
         withCredentials: true
       });
       setUser(res.data);
