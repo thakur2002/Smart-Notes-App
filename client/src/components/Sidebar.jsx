@@ -42,7 +42,7 @@ const Sidebar = ({
     const formattedTitle = formatTitle(newTitle);
     try {
       await axios.put(
-        `https://notesappserver-u4v5.onrender.com/notes/${noteId}`,
+        `https://smartnotesappserver.onrender.com/notes/${noteId}`,
         { title: formattedTitle },
         { withCredentials:true }
       );
@@ -73,7 +73,7 @@ const Sidebar = ({
     setError(null);
     try {
       await axios.delete(
-        `https://notesappserver-u4v5.onrender.com/notes/${noteId}`,
+        `https://smartnotesappserver.onrender.com/notes/${noteId}`,
         {withCredentials:true}
       );
       fetchNotes();
