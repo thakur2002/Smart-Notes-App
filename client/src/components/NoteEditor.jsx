@@ -72,7 +72,7 @@ const NoteEditor = ({ selectedNote, setSelectedNote, fetchNotes }) => {
     try {
       if (selectedNote) {
         await axios.put(
-          `https://notesappserver-u4v5.onrender.com/notes/${selectedNote._id}`,
+          `https://smartnotesappserver.onrender.com/notes/${selectedNote._id}`,
           { ...noteData, content },
           { withCredentials:true }
         );
@@ -83,7 +83,7 @@ const NoteEditor = ({ selectedNote, setSelectedNote, fetchNotes }) => {
   }));
       } else {
         const response = await axios.post(
-          'https://notesappserver-u4v5.onrender.com/notes',
+          'https://smartnotesappserver.onrender.com/notes',
           { ...noteData, content },
           { withCredentials:true }
         );
@@ -103,7 +103,7 @@ const NoteEditor = ({ selectedNote, setSelectedNote, fetchNotes }) => {
     setIsSummarizing(true);
     try {
       const response = await axios.post(
-        `https://notesappserver-u4v5.onrender.com/notes/${selectedNote._id}/summarize`,{},
+        `https://smartnotesappserver.onrender.com/notes/${selectedNote._id}/summarize`,{},
         {withCredentials:true }
       );
       setSummary(response.data.summary);
@@ -120,7 +120,7 @@ const NoteEditor = ({ selectedNote, setSelectedNote, fetchNotes }) => {
     setIsExtractingKeywords(true);
     try {
       const response = await axios.post(
-        `https://notesappserver-u4v5.onrender.com/notes/${selectedNote._id}/keywords`,{},
+        `https://smartnotesappserver.onrender.com/notes/${selectedNote._id}/keywords`,{},
         { withCredentials:true }
       );
       setKeywords(response.data.keywords);
