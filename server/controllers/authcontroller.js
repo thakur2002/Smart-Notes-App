@@ -28,10 +28,11 @@ exports.login = async (req, res) => {
       });
 
       res.cookie('token', token, {
-        httpOnly: true,
-        secure: process.env.NODE_ENV === 'production', // set true in production
-        sameSite: 'None',
-        maxAge: 2 * 24 * 60 * 60 * 1000, // 2 days
+      path: '/',
+      httpOnly: true,       // Prevent JavaScript access to the cookie
+      secure: true,        
+      sameSite: 'None',    // Allow cookies in cross-site contexts
+      maxAge: 172800000       // 2 day expiration
       });
 
     res.json({ user: { _id: user._id, username: user.username } });
