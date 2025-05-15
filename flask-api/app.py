@@ -102,15 +102,19 @@ def summarize():
 
         parser = PlaintextParser.from_string(text, Tokenizer("english"))
         summarizer = TextRankSummarizer()
-        all_sentences = summarizer(parser.document, 6)
+       all_sentences = list(summarizer(parser.document, 10))  # Try summarizing more
 
-        ignore_starts = ('it', 'they', 'he', 'she', 'this', 'these', 'those', 'that')
-        filtered = [
-            str(s) for s in all_sentences
-            if not str(s).strip().lower().startswith(ignore_starts)
-        ]
+total_input_sentences = len(parser.document.sentences)
+summary_len = max(3, int(0.25 * total_input_sentences))  # Dynamic length
 
-        final_summary = filtered[:3] if len(filtered) >= 3 else [str(s) for s in all_sentences[:3]]
+ignore_starts = ('it', 'they', 'he', 'she', 'this', 'these', 'those', 'that')
+filtered = [
+    str(s) for s in all_sentences
+    if not str(s).strip().lower().startswith(ignore_starts)
+]
+
+final_summary = filtered[:summary_len] if len(filtered) >= summary_len else [str(s) for s in all_sentences[:summary_len]]
+
         return jsonify({'summary': ' '.join(final_summary)})
 
     except Exception as e:
