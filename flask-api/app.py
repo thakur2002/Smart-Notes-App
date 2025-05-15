@@ -102,24 +102,24 @@ def summarize():
 
         parser = PlaintextParser.from_string(text, Tokenizer("english"))
         summarizer = TextRankSummarizer()
-       all_sentences = list(summarizer(parser.document, 10))  # Try summarizing more
+        all_sentences = list(summarizer(parser.document, 10))
 
-total_input_sentences = len(parser.document.sentences)
-summary_len = max(3, int(0.25 * total_input_sentences))  # Dynamic length
+        total_input_sentences = len(parser.document.sentences)
+        summary_len = max(3, int(0.25 * total_input_sentences))  # Dynamically adjust summary length
 
-ignore_starts = ('it', 'they', 'he', 'she', 'this', 'these', 'those', 'that')
-filtered = [
-    str(s) for s in all_sentences
-    if not str(s).strip().lower().startswith(ignore_starts)
-]
+        ignore_starts = ('it', 'they', 'he', 'she', 'this', 'these', 'those', 'that')
+        filtered = [
+            str(s) for s in all_sentences
+            if not str(s).strip().lower().startswith(ignore_starts)
+        ]
 
-final_summary = filtered[:summary_len] if len(filtered) >= summary_len else [str(s) for s in all_sentences[:summary_len]]
-
+        final_summary = filtered[:summary_len] if len(filtered) >= summary_len else [str(s) for s in all_sentences[:summary_len]]
         return jsonify({'summary': ' '.join(final_summary)})
 
     except Exception as e:
         print("Summarization Error:", str(e))
         return jsonify({'error': str(e)}), 500
+
 # ===== Main =====
 if __name__ == '__main__':
     port = int(os.environ.get("PORT", 5000))
