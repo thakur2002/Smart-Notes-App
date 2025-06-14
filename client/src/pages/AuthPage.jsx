@@ -44,7 +44,7 @@ const validatePassword = (pwd) => {
         // console.log('Sending registration request to:', 'http://localhost:5000/register');
         // console.log('Request payload:', { username, password });
 
-        const response = await axios.post('https://notesappserver-u4v5.onrender.com/auth/register', { username, password });
+        const response = await axios.post('https://smartnotesappserver.onrender.com/auth/register', { username, password });
         console.log('Registration response:', response.data);
 
         setSuccessMessage('Registration successful! Logging you in...');
