@@ -46,7 +46,7 @@ const Dashboard = () => {
     setIsLoading(true);
     setError(null);
     try {
-      const res = await axios.get('https://notesappserver-u4v5.onrender.com/notes', {
+      const res = await axios.get('https://smartnotesappserver.onrender.com/notes', {
         params: { search: searchTerm, tag: selectedTag} ,
       withCredentials:true});
       setNotes(res.data);
